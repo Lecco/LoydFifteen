@@ -32,6 +32,8 @@ int getManhattanDistance(struct GameState state);
 void insertPQ(struct GameState *state);
 void printPQ();
 int notEmptyPQ();
+struct GameState *getQueueTop();
+void solveFifteen();
 
 
 /********************** FUNCTION DEFINITIONS *****************/
@@ -41,7 +43,16 @@ int notEmptyPQ();
 */
 int canMoveLeft(struct GameState* thisState)
 {
-     return 1;
+    int i;
+    int length = sizeof(thisState->tilesPosition);
+    for (i = 0; i < length; i++)
+    {
+        if (thisState->tilesPosition[i][0] == 0)
+        {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 /**
@@ -50,6 +61,15 @@ int canMoveLeft(struct GameState* thisState)
 */
 int canMoveRight(struct GameState* thisState)
 {
+    int i;
+    int length = sizeof(thisState->tilesPosition);
+    for (i = 0; i < length; i++)
+    {
+        if (thisState->tilesPosition[i][length - 1] == 0)
+        {
+            return 0;
+        }
+    }
     return 1;
 }
 
@@ -59,6 +79,15 @@ int canMoveRight(struct GameState* thisState)
 */
 int canMoveUp(struct GameState* thisState)
 {
+    int i;
+    int length = sizeof(thisState->tilesPosition);
+    for (i = 0; i < length; i++)
+    {
+        if (thisState->tilesPosition[0][i] == 0)
+        {
+            return 0;
+        }
+    }
     return 1;
 }
 
@@ -68,6 +97,15 @@ int canMoveUp(struct GameState* thisState)
 */
 int canMoveDown(struct GameState* thisState)
 {
+    int i;
+    int length = sizeof(thisState->tilesPosition);
+    for (i = 0; i < length; i++)
+    {
+        if (thisState->tilesPosition[length - 1][i] == 0)
+        {
+            return 0;
+        }
+    }
     return 1;
 }
 
@@ -187,6 +225,52 @@ int notEmptyPQ()
     return (queueTop != NULL);    
 }
 
+/**
+    Returns top of priority queue (element with lowest manhattan distance)
+*/
+struct GameState *getQueueTop()
+{
+    struct GameState *top = queueTop;
+    queueTop = queueTop->next;
+    return top;
+}
+
+/**
+    Searches for solution
+*/
+void solveFifteen()
+{
+    struct GameState *tmp;
+    
+    while (notEmptyPQ())
+    {
+        tmp = getQueueTop();
+        if (tmp->manhattanDistance == 0)
+        {
+            printf("Nalezena cesta!\n");    
+        }
+        else
+        {
+            if (canMoveLeft(tmp))
+            {
+                printf("Muzeme vlevo\n");
+            }
+            if (canMoveRight(tmp))
+            {
+                printf("Muzeme vpravo\n");
+            }
+            if (canMoveUp(tmp))
+            {
+                printf("Muzeme nahoru\n");
+            }
+            if (canMoveDown(tmp))
+            {
+                printf("Muzeme dolu\n");
+            }
+        }
+    }
+}
+
 
 /********************** MAIN PROGRAM ********************/
 
@@ -274,11 +358,7 @@ int main(int argc, char *argv[])
     // insert first element to priority queue
     insertPQ(&state);
     
-    /*
-    while (notEmptyPQ())
-    {
-            
-    }*/
+    solveFifteen();
     
     printPQ();
     
