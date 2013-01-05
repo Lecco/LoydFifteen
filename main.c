@@ -7,21 +7,22 @@
 
 
 /***************** DATA STRUCTURES ***************************/
-typedef struct 
+struct GameState
 {
         int** tilesPosition;
         int manhattanDistance;
         int distance;
-} GameState;
+        struct GameState *next;
+} *queue = NULL;
 
 /**************** FUNCTION PROTOTYPES ********************/
-int canMoveLeft(GameState* thisState);
-int canMoveRight(GameState* thisState);
-int canMoveUp(GameState* thisState);
-int canMoveDown(GameState* thisState);
+int canMoveLeft(struct GameState* thisState);
+int canMoveRight(struct GameState* thisState);
+int canMoveUp(struct GameState* thisState);
+int canMoveDown(struct GameState* thisState);
 int getRowsCount(char* initState);
 void printMatrix(int** matrix);
-int getManhattanDistance(GameState state);
+int getManhattanDistance(struct GameState state);
 
 
 /********************** FUNCTION DEFINITIONS *****************/
@@ -29,7 +30,7 @@ int getManhattanDistance(GameState state);
    Returns true (1) if in current game tree state it is possible
    to move empty space left
 */
-int canMoveLeft(GameState* thisState)
+int canMoveLeft(struct GameState* thisState)
 {
      return 1;
 }
@@ -38,7 +39,7 @@ int canMoveLeft(GameState* thisState)
    Returns true (1) if in current game tree state it is possible
    to move empty space right
 */
-int canMoveRight(GameState* thisState)
+int canMoveRight(struct GameState* thisState)
 {
     return 1;
 }
@@ -47,7 +48,7 @@ int canMoveRight(GameState* thisState)
    Returns true (1) if in current game tree state it is possible
    to move empty space up
 */
-int canMoveUp(GameState* thisState)
+int canMoveUp(struct GameState* thisState)
 {
     return 1;
 }
@@ -56,7 +57,7 @@ int canMoveUp(GameState* thisState)
    Returns true (1) if in current game tree state it is possible
    to move empty space down
 */
-int canMoveDown(GameState* thisState)
+int canMoveDown(struct GameState* thisState)
 {
     return 1;
 }
@@ -104,7 +105,7 @@ void printMatrix(int** matrix)
 /**
     Returns sum of manhattan distances between number and their right position
 */
-int getManhattanDistance(GameState state)
+int getManhattanDistance(struct GameState state)
 {
     int manhattan = 0;
     int number = 0;
@@ -147,9 +148,8 @@ int main(int argc, char *argv[])
     
     int i, j;
     int length = strlen(initState);
-    GameState state;
+    struct GameState state;
     state.distance = 0;
-    GameState priorityQueue[30];
     
     // count rows
     int rows = getRowsCount(initState);
@@ -211,6 +211,11 @@ int main(int argc, char *argv[])
     
     printMatrix(state.tilesPosition);
     
+    /*
+    http://voho.cz/wiki/informatika/algoritmus/graf/a-star/
+    http://stackoverflow.com/questions/9917366/priority-queue-in-c
+    http://www.indiastudychannel.com/resources/13012-C-Program-priority-queue-using-linked-list.aspx
+    */
     
     printf("%d\n", getManhattanDistance(state));
     system("PAUSE");
