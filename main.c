@@ -13,6 +13,7 @@ struct GameState
         int manhattanDistance;
         int distance;
         struct GameState *next;
+        struct GameState *prev;
 } *queueTop = NULL;
 
 /**************** FUNCTION PROTOTYPES ********************/
@@ -22,6 +23,10 @@ int canMoveLeft(struct GameState* thisState);
 int canMoveRight(struct GameState* thisState);
 int canMoveUp(struct GameState* thisState);
 int canMoveDown(struct GameState* thisState);
+struct GameState *stateAfterLeft(struct GameState* state);
+struct GameState *stateAfterRight(struct GameState* state);
+struct GameState *stateAfterUp(struct GameState* state);
+struct GameState *stateAfterDown(struct GameState* state);
 
 // function working with parameter from command line
 int getRowsCount(char* initState);
@@ -107,6 +112,26 @@ int canMoveDown(struct GameState* thisState)
         }
     }
     return 1;
+}
+
+struct GameState *stateAfterLeft(struct GameState* state)
+{
+    return state;
+}
+
+struct GameState *stateAfterRight(struct GameState* state)
+{
+    return state;
+}
+
+struct GameState *stateAfterUp(struct GameState* state)
+{
+    return state;
+}
+
+struct GameState *stateAfterDown(struct GameState* state)
+{
+    return state;
 }
 
 /**
@@ -240,32 +265,45 @@ struct GameState *getQueueTop()
 */
 void solveFifteen()
 {
+    struct GameState *queue;
     struct GameState *tmp;
     
     while (notEmptyPQ())
     {
-        tmp = getQueueTop();
-        if (tmp->manhattanDistance == 0)
+        queue = getQueueTop();
+        if (queue->manhattanDistance == 0)
         {
             printf("Nalezena cesta!\n");    
         }
         else
         {
-            if (canMoveLeft(tmp))
+            if (canMoveLeft(queue))
             {
                 printf("Muzeme vlevo\n");
+                tmp = stateAfterLeft(queue);
+                tmp->prev = queue;
+                insertPQ(&tmp);
             }
-            if (canMoveRight(tmp))
+            if (canMoveRight(queue))
             {
                 printf("Muzeme vpravo\n");
+                tmp = stateAfterRight(queue);
+                tmp->prev = queue;
+                insertPQ(&tmp);
             }
-            if (canMoveUp(tmp))
+            if (canMoveUp(queue))
             {
                 printf("Muzeme nahoru\n");
+                tmp = stateAfterUp(queue);
+                tmp->prev = queue;
+                insertPQ(&tmp);
             }
-            if (canMoveDown(tmp))
+            if (canMoveDown(queue))
             {
                 printf("Muzeme dolu\n");
+                tmp = stateAfterDown(queue);
+                tmp->prev = queue;
+                insertPQ(&tmp);
             }
         }
     }
