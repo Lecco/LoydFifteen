@@ -222,8 +222,6 @@ void insertPQ(struct GameState *state)
         state->next = tmp->next;
         tmp->next = state;
         tmp->next->next = NULL;
-        
-        
     }
 }
 
@@ -281,30 +279,37 @@ void solveFifteen()
             {
                 printf("Muzeme vlevo\n");
                 tmp = stateAfterLeft(queue);
+                printMatrix(tmp->tilesPosition);
                 tmp->prev = queue;
-                insertPQ(&tmp);
+                tmp->manhattanDistance = getManhattanDistance(*queue);
+                insertPQ(tmp);
             }
             if (canMoveRight(queue))
             {
                 printf("Muzeme vpravo\n");
                 tmp = stateAfterRight(queue);
                 tmp->prev = queue;
-                insertPQ(&tmp);
+                tmp->manhattanDistance = getManhattanDistance(*queue);
+                insertPQ(tmp);
             }
             if (canMoveUp(queue))
             {
                 printf("Muzeme nahoru\n");
                 tmp = stateAfterUp(queue);
                 tmp->prev = queue;
-                insertPQ(&tmp);
+                tmp->manhattanDistance = getManhattanDistance(*queue);
+                insertPQ(tmp);
             }
             if (canMoveDown(queue))
             {
                 printf("Muzeme dolu\n");
                 tmp = stateAfterDown(queue);
                 tmp->prev = queue;
-                insertPQ(&tmp);
+                tmp->manhattanDistance = getManhattanDistance(*queue);
+                insertPQ(tmp);
             }
+            printPQ();
+            system("PAUSE");
         }
     }
 }
