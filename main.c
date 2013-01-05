@@ -23,10 +23,12 @@ int canMoveLeft(struct GameState* thisState);
 int canMoveRight(struct GameState* thisState);
 int canMoveUp(struct GameState* thisState);
 int canMoveDown(struct GameState* thisState);
-struct GameState *stateAfterLeft(struct GameState state);
-struct GameState *stateAfterRight(struct GameState state);
-struct GameState *stateAfterUp(struct GameState state);
-struct GameState *stateAfterDown(struct GameState state);
+void moveLeft(struct GameState *state);
+/*
+void moveRight(struct GameState state);
+void moveUp(struct GameState state);
+void moveDown(struct GameState state);
+*/
 
 // function working with parameter from command line
 int getRowsCount(char* initState);
@@ -118,30 +120,28 @@ int canMoveDown(struct GameState* thisState)
 /**
     Return state after moving empty space to left.
 */
-struct GameState *stateAfterLeft(struct GameState state)
+void moveLeft(struct GameState *state)
 {
-    struct GameState *g = malloc(sizeof(struct GameState *));
-    g->tilesPosition = state.tilesPosition;
     int i, j;
-    int length = sizeof(g->tilesPosition);
+    int length = sizeof(state->tilesPosition);
     for (i = 0; i < length; i++)
     {
         for (j = 0; j < length; j++)
         {
-            if (g->tilesPosition[i][j] == 0)
+            if (state->tilesPosition[i][j] == 0)
             {
-                g->tilesPosition[i][j] = g->tilesPosition[i][j - 1];
-                g->tilesPosition[i][j - 1] = 0;
+                state->tilesPosition[i][j] = state->tilesPosition[i][j - 1];
+                state->tilesPosition[i][j - 1] = 0;
             }
         }
     }
-    return g;
 }
 
 /**
     Return state after moving empty space to right.
 */
-struct GameState *stateAfterRight(struct GameState state)
+/*
+void moveRight(struct GameState state)
 {
     struct GameState *g = malloc(sizeof(struct GameState *));
     g->tilesPosition = state.tilesPosition;
@@ -164,7 +164,8 @@ struct GameState *stateAfterRight(struct GameState state)
 /**
     Return state after moving empty space to up.
 */
-struct GameState *stateAfterUp(struct GameState state)
+/*
+void moveUp(struct GameState state)
 {
     struct GameState *g = malloc(sizeof(struct GameState *));
     g->tilesPosition = state.tilesPosition;
@@ -187,7 +188,8 @@ struct GameState *stateAfterUp(struct GameState state)
 /**
     Return state after moving empty space to down.
 */
-struct GameState *stateAfterDown(struct GameState state)
+/*
+void moveDown(struct GameState state)
 {
     struct GameState *g = malloc(sizeof(struct GameState *));
     g->tilesPosition = state.tilesPosition;
@@ -337,42 +339,64 @@ struct GameState *getQueueTop()
 void solveFifteen()
 {
     struct GameState *queue;
-    struct GameState *tmp;
+    int i, j;
     
-    printf("start solve fifteen\n");
-    system("PAUSE");
     while (notEmptyPQ())
     {
         queue = getQueueTop();
-        printMatrix(queue->tilesPosition);
-        if (queue->manhattanDistance == 0)
+            
+        if ((*queue).manhattanDistance == 0)
         {
             printf("Nalezena cesta!\n");    
         }
         else
         {
-            printf("pred prvnim ifem\n");
-            system("PAUSE");
             if (canMoveLeft(queue))
             {
                 printf("Muzeme vlevo\n");
-                tmp = stateAfterLeft(*queue);
-                tmp->prev = queue;
-                tmp->manhattanDistance = getManhattanDistance(*queue);
-                insertPQ(tmp);
-                printf("print matrix queue\n");
+                struct GameState tmp;
+                                
+                tmp.next = (*queue).next;
+                tmp.prev = queue;
+
+                int length = sizeof((*queue).tilesPosition);
+                tmp.tilesPosition = malloc(sizeof(int *));
+                for (i = 0; i < length; i++)
+                {
+                    tmp.tilesPosition[i] = malloc((sizeof(int *) * sizeof(int *)));
+                    for (j = 0; j < length; j++)
+                    {
+                        tmp.tilesPosition[i][j] = (*queue).tilesPosition[i][j];
+                    }
+                }
+                
+                moveLeft(&tmp);
+                
+                insertPQ(&tmp);
+                tmp.manhattanDistance = getManhattanDistance(tmp);
+                tmp.distance = (*queue).distance + 1;
+                
+                printf("tmp: %d\n", tmp.distance);
+                printMatrix(tmp.tilesPosition);
+                printf("queue: %d\n", queue->distance);
                 printMatrix(queue->tilesPosition);
-                printf("print matrix tmp\n");
-                printMatrix(tmp->tilesPosition);
+                
+                printPQ();
+                
+                system("PAUSE");
+                
+                // deallocate memory
+                
             }
+            /*
             printf("pred druhym ifem\n");
             system("PAUSE");
             if (canMoveRight(queue))
             {
                 printf("Muzeme vpravo\n");
                 tmp = stateAfterRight(*queue);
-                tmp->prev = queue;
-                tmp->manhattanDistance = getManhattanDistance(*queue);
+                tmp.prev = queue;
+                tmp.manhattanDistance = getManhattanDistance(*queue);
                 insertPQ(tmp);
             }
             printf("pred tretim ifem\n");
@@ -381,8 +405,8 @@ void solveFifteen()
             {
                 printf("Muzeme nahoru\n");
                 tmp = stateAfterUp(*queue);
-                tmp->prev = queue;
-                tmp->manhattanDistance = getManhattanDistance(*queue);
+                tmp.prev = queue;
+                tmp.manhattanDistance = getManhattanDistance(*queue);
                 insertPQ(tmp);
             }
             printf("pred ctvrtym ifem\n");
@@ -391,12 +415,11 @@ void solveFifteen()
             {
                 printf("Muzeme dolu\n");
                 tmp = stateAfterDown(*queue);
-                tmp->prev = queue;
-                tmp->manhattanDistance = getManhattanDistance(*queue);
+                tmp.prev = queue;
+                tmp.manhattanDistance = getManhattanDistance(*queue);
                 insertPQ(tmp);
             }
-            system("PAUSE");
-            printPQ();
+            */
             
         }
     }
@@ -429,10 +452,10 @@ int main(int argc, char *argv[])
     rows++;
     
     // allocation of memory for initial state of game
-    state.tilesPosition = (int *) malloc(rows * sizeof(int *));
+    state.tilesPosition = (int *)malloc(rows * sizeof(int *));
     for (i = 0; i < rows; i++)
     {
-        state.tilesPosition[i] = malloc(rows * sizeof(int *));   
+        state.tilesPosition[i] = (int *)malloc(rows * sizeof(int *));   
         for (j = 0; j < sizeof(state.tilesPosition[i]); j++)
         {
             state.tilesPosition[i][j] = 0;    
@@ -483,8 +506,8 @@ int main(int argc, char *argv[])
     printMatrix(state.tilesPosition);
     
     // init of first element in priority queue
-    state.distance = 0;
     state.manhattanDistance = getManhattanDistance(state);
+    state.distance = 0;
     
     // insert first element to priority queue
     insertPQ(&state);
@@ -499,7 +522,7 @@ int main(int argc, char *argv[])
     http://www.indiastudychannel.com/resources/13012-C-Program-priority-queue-using-linked-list.aspx
     */
     
-    printf("%d\n", getManhattanDistance(state));
+    printf("Manhattan: %d\n", getManhattanDistance(state));
     system("PAUSE");
     return 0;
 }
