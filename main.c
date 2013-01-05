@@ -13,16 +13,25 @@ struct GameState
         int manhattanDistance;
         int distance;
         struct GameState *next;
-} *queue = NULL;
+} *queueTop = NULL;
 
 /**************** FUNCTION PROTOTYPES ********************/
+
+// functions of GameState structure
 int canMoveLeft(struct GameState* thisState);
 int canMoveRight(struct GameState* thisState);
 int canMoveUp(struct GameState* thisState);
 int canMoveDown(struct GameState* thisState);
+
+// function working with parameter from command line
 int getRowsCount(char* initState);
 void printMatrix(int** matrix);
+
+// PQ = priority queue
 int getManhattanDistance(struct GameState state);
+void insertPQ(struct GameState *state);
+void printPQ();
+int notEmptyPQ();
 
 
 /********************** FUNCTION DEFINITIONS *****************/
@@ -119,6 +128,7 @@ int getManhattanDistance(struct GameState state)
             number = state.tilesPosition[i][j];
             if (number == 0)
             {
+                // zero is on sixteenth position
                 number = POSITION_ZERO;
             }
             row = (number - 1) / length;
@@ -130,6 +140,52 @@ int getManhattanDistance(struct GameState state)
     return manhattan;
 }
 
+/**
+    Inserts game state to prioiroty queue (depending on its manhattan distance)
+*/
+void insertPQ(struct GameState *state)
+{
+    if (queueTop == NULL)
+    {
+        queueTop = state;
+        queueTop->next = NULL;
+    }
+    else
+    {
+        struct GameState *tmp = queueTop;
+        
+        while (tmp->next != NULL && tmp->next->manhattanDistance > state->manhattanDistance);
+        
+        state->next = tmp->next;
+        tmp->next = state;
+        tmp->next->next = NULL;
+        
+        
+    }
+}
+
+/**
+    Print priority queue from beginning in format: Position. ManhattanDistance
+*/
+void printPQ()
+{
+    struct GameState *tmp;
+    tmp = queueTop;
+    int i;
+    for (i = 1; tmp != NULL; i++)
+    {
+        printf("%d. %d\n", i, tmp->manhattanDistance);  
+        tmp = tmp->next;  
+    }
+}
+
+/**
+    Returns true (1) if priority queue isn't empty
+*/
+int notEmptyPQ()
+{
+    return (queueTop != NULL);    
+}
 
 
 /********************** MAIN PROGRAM ********************/
@@ -210,6 +266,21 @@ int main(int argc, char *argv[])
     }
     
     printMatrix(state.tilesPosition);
+    
+    // init of first element in priority queue
+    state.distance = 0;
+    state.manhattanDistance = getManhattanDistance(state);
+    
+    // insert first element to priority queue
+    insertPQ(&state);
+    
+    /*
+    while (notEmptyPQ())
+    {
+            
+    }*/
+    
+    printPQ();
     
     /*
     http://voho.cz/wiki/informatika/algoritmus/graf/a-star/
