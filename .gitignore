@@ -15,6 +15,9 @@ local.properties
 .classpath
 .settings/
 .loadpath
+SemestralniPrace.exe
+SemestralniPrace.layout
+main.o
 
 # External tool builders
 .externalToolBuilders/
