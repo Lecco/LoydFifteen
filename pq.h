@@ -1,14 +1,5 @@
-struct GameState
-{
-        int** tilesPosition;
-        int manhattanDistance;
-        int distance;
-        struct GameState *next;
-        struct GameState *prev;
-} *front = NULL;
-
 /**
-    Inserts game state to prioiroty queue (depending on its manhattan distance)
+    Inserts game state to priority queue (depending on its manhattan distance)
 */
 void insertPQ(struct GameState *state)
 {
@@ -41,7 +32,7 @@ void printPQ()
     for (i = 1; tmp != NULL; i++)
     {
         printf("%d. %d\n", i, (tmp->manhattanDistance + tmp->distance));  
-        tmp = tmp->next;  
+        tmp = tmp->next; 
     }
 }
 

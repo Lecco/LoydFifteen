@@ -1,3 +1,12 @@
+struct GameState
+{
+        int** tilesPosition;
+        int manhattanDistance;
+        int distance;
+        struct GameState *next;
+        struct GameState *prev;
+} *front = NULL;
+
 /**
    Returns true (1) if in current game tree state it is possible
    to move empty space left

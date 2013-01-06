@@ -1,8 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "pq.h"
+
+
 #include "constants.h"
 #include "game_states.h"
+#include "pq.h"
+
+/**
+    Creates new game state (copies values from argument)
+*/
+struct GameState *createNewState(struct GameState queue)
+{
+    struct GameState *s;
+    int i, j;
+    
+    s = (struct GameState *) malloc(sizeof(struct GameState) + sizeof(int *) * sizeof(int *) * 100);
+    s->distance = queue.distance + 1;
+    
+    s->tilesPosition = (int **)malloc(sizeof(int *) * sizeof(int *) * 100);
+    int length = sizeof(int *);
+    for (i = 0; i < length; i++)
+    {
+        s->tilesPosition[i] = (int *)malloc(length * sizeof(int *) * 100);
+        
+        for (j = 0; j < length; j++)
+        {
+            s->tilesPosition[i][j] = queue.tilesPosition[i][j];
+        }
+    }
+    
+    s->manhattanDistance = getManhattanDistance(*s);
+    
+    s->prev = malloc(sizeof(queue) * 100);
+    s->prev = &queue;
+    s->next = malloc(sizeof(queue) * 100);
+    
+    return s; 
+}
 
 /**
     Searches for solution
@@ -23,121 +57,34 @@ void solveFifteen()
         else
         {
             printMatrix(queue->tilesPosition);
+            printf("pred vlevo\n");
             if (canMoveLeft(queue))
             {
-                struct GameState *s;
-                s = (struct GameState *) malloc(sizeof(struct GameState) + sizeof(int *) * sizeof(int *) * 100);
-                s->distance = queue->distance + 1;
-                
-                s->tilesPosition = (int **)malloc(sizeof(int *) * sizeof(int *) * 100);
-                int length = sizeof(int *);
-                for (i = 0; i < length; i++)
-                {
-                    s->tilesPosition[i] = (int *)malloc(length * sizeof(int *) * 100);
-                    
-                    for (j = 0; j < length; j++)
-                    {
-                        s->tilesPosition[i][j] = queue->tilesPosition[i][j];
-                    }
-                }
-                
-                s->manhattanDistance = getManhattanDistance(*s);
-                
-                s->prev = malloc(sizeof(queue) * 100);
-                s->prev = queue;
-                s->next = malloc(sizeof(queue) * 100);
-                
+                struct GameState *s = createNewState(*queue);
                 moveLeft(s);
-                
                 insertPQ(s);
             }
+            printf("pred vpravo\n");
             if (canMoveRight(queue))
             {
-                struct GameState *s;
-                s = (struct GameState *) malloc(sizeof(struct GameState) + sizeof(int *) * sizeof(int *) * 100);
-                s->distance = queue->distance + 1;
-                
-                s->tilesPosition = (int **)malloc(sizeof(int *) * sizeof(int *) * 100);
-                int length = sizeof(int *);
-                for (i = 0; i < length; i++)
-                {
-                    s->tilesPosition[i] = (int *)malloc(length * sizeof(int *) * 100);
-                    
-                    for (j = 0; j < length; j++)
-                    {
-                        s->tilesPosition[i][j] = queue->tilesPosition[i][j];
-                    }
-                }
-                
-                s->manhattanDistance = getManhattanDistance(*s);
-                
-                s->prev = malloc(sizeof(queue) * 100);
-                s->prev = queue;
-                s->next = malloc(sizeof(queue) * 100);
-                
+                struct GameState *s = createNewState(*queue);
                 moveRight(s);
-                
                 insertPQ(s);
             }
-            /*
+            printf("pred hore\n");
             if (canMoveUp(queue))
             {
-                struct GameState *s;
-                s = (struct GameState *) malloc(sizeof(struct GameState) + sizeof(int *) * sizeof(int *) * 100);
-                s->distance = queue->distance + 1;
-                
-                s->tilesPosition = (int **)malloc(sizeof(int *) * sizeof(int *) * 100);
-                int length = sizeof(int *);
-                for (i = 0; i < length; i++)
-                {
-                    s->tilesPosition[i] = (int *)malloc(length * sizeof(int *) * 100);
-                    
-                    for (j = 0; j < length; j++)
-                    {
-                        s->tilesPosition[i][j] = queue->tilesPosition[i][j];
-                    }
-                }
-                
-                s->manhattanDistance = getManhattanDistance(*s);
-                
-                s->prev = malloc(sizeof(queue) * 100);
-                s->prev = queue;
-                s->next = malloc(sizeof(queue) * 100);
-                
+                struct GameState *s = createNewState(*queue);
                 moveUp(s);
-                
                 insertPQ(s);
             }
-            */
+            printf("pred dole\n");
             if (canMoveDown(queue))
             {
-                struct GameState *s;
-                s = (struct GameState *) malloc(sizeof(struct GameState) + sizeof(int *) * sizeof(int *) * 100);
-                s->distance = queue->distance + 1;
-                
-                s->tilesPosition = (int **)malloc(sizeof(int *) * sizeof(int *) * 100);
-                int length = sizeof(int *);
-                for (i = 0; i < length; i++)
-                {
-                    s->tilesPosition[i] = (int *)malloc(length * sizeof(int *) * 100);
-                    
-                    for (j = 0; j < length; j++)
-                    {
-                        s->tilesPosition[i][j] = queue->tilesPosition[i][j];
-                    }
-                }
-                
-                s->manhattanDistance = getManhattanDistance(*s);
-                
-                s->prev = malloc(sizeof(queue) * 100);
-                s->prev = queue;
-                s->next = malloc(sizeof(queue) * 100);
-                
+                struct GameState *s = createNewState(*queue);
                 moveDown(s);
-                
                 insertPQ(s);
             }
-            
             printPQ();
             system("PAUSE");
         }
