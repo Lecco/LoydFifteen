@@ -44,7 +44,6 @@ struct GameState *createNewState(struct GameState queue)
 void solveFifteen()
 {
     struct GameState *queue;
-    int i, j;
     
     while (notEmptyPQ())
     {        
@@ -52,33 +51,31 @@ void solveFifteen()
             
         if (queue->manhattanDistance == 0)
         {
-            printf("Nalezena cesta!\n");    
+            printMatrix(queue->tilesPosition);
+            printf("Nalezena cesta!\n");   
+            system("PAUSE"); 
         }
         else
         {
             printMatrix(queue->tilesPosition);
-            printf("pred vlevo\n");
             if (canMoveLeft(queue))
             {
                 struct GameState *s = createNewState(*queue);
                 moveLeft(s);
                 insertPQ(s);
             }
-            printf("pred vpravo\n");
             if (canMoveRight(queue))
             {
                 struct GameState *s = createNewState(*queue);
                 moveRight(s);
                 insertPQ(s);
             }
-            printf("pred hore\n");
             if (canMoveUp(queue))
             {
                 struct GameState *s = createNewState(*queue);
                 moveUp(s);
                 insertPQ(s);
             }
-            printf("pred dole\n");
             if (canMoveDown(queue))
             {
                 struct GameState *s = createNewState(*queue);
@@ -117,7 +114,7 @@ int main(int argc, char *argv[])
     rows++;
     
     // allocation of memory for initial state of game
-    state.tilesPosition = (int *)malloc(rows * sizeof(int *));
+    state.tilesPosition = (int **)malloc(rows * sizeof(int *));
     for (i = 0; i < rows; i++)
     {
         state.tilesPosition[i] = (int *)malloc(rows * sizeof(int *));   
