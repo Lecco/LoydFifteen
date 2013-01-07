@@ -94,6 +94,7 @@ void moveLeft(struct GameState *state)
             {
                 state->tilesPosition[i][j] = state->tilesPosition[i][j - 1];
                 state->tilesPosition[i][j - 1] = 0;
+                return;
             }
         }
     }
@@ -114,6 +115,7 @@ void moveRight(struct GameState *state)
             {
                 state->tilesPosition[i][j] = state->tilesPosition[i][j + 1];
                 state->tilesPosition[i][j + 1] = 0;
+                return;
             }
         }
     }
@@ -134,6 +136,7 @@ void moveUp(struct GameState *state)
             {
                 state->tilesPosition[i][j] = state->tilesPosition[i - 1][j];
                 state->tilesPosition[i - 1][j] = 0;
+                return;
             }
         }
     }
@@ -154,6 +157,7 @@ void moveDown(struct GameState *state)
             {
                 state->tilesPosition[i][j] = state->tilesPosition[i + 1][j];
                 state->tilesPosition[i + 1][j] = 0;
+                return;
             }
         }
     }
