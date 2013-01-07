@@ -164,6 +164,47 @@ void moveDown(struct GameState *state)
 }
 
 /**
+    Return last move
+*/
+int getLastMove(struct GameState *state)
+{
+    if (state->prev == NULL)
+    {
+        return 0;
+    }
+    else
+    {
+        int i, j;
+        int length = sizeof(state->tilesPosition);
+        for (i = 0; i < length; i++)
+        {
+            for (j = 0; j < length; j++)
+            {
+                if (state->tilesPosition[i][j] == 0)
+                {
+                    if (j > 0 && state->prev->tilesPosition[i][j - 1] == 0)
+                    {
+                        return MOVE_RIGHT;
+                    }
+                    if (i < (length - 1) && state->prev->tilesPosition[i + 1][j] == 0)
+                    {
+                        return MOVE_UP;
+                    }
+                    if (j < (length - 1) && state->prev->tilesPosition[i][j + 1] == 0)
+                    {
+                        return MOVE_LEFT;
+                    }
+                    if (i > 0 && state->prev->tilesPosition[i - 1][j] == 0)
+                    {
+                        return MOVE_DOWN;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
     Returns number of rows in given string (according to format of parameter)
 */
 int getRowsCount(char* initState)
@@ -212,7 +253,7 @@ int getManhattanDistance(struct GameState state)
     int number = 0;
     int row;
     int i, j;
-    int length = sizeof(state.tilesPosition); 
+    int length = sizeof(state.tilesPosition);
     for (i = 0; i < length; i++)
     {
         for (j = 0; j < length; j++)
@@ -220,8 +261,8 @@ int getManhattanDistance(struct GameState state)
             number = state.tilesPosition[i][j];
             if (number == 0)
             {
-                // zero is on sixteenth position
-                number = POSITION_ZERO;
+                // zero is on last position
+                number = length * length;
             }
             row = (number - 1) / length;
             manhattan += abs(row - i);
