@@ -1,4 +1,8 @@
-#define POSITION_ZERO 16
+#define MOVE_LEFT 1
+#define MOVE_UP 2
+#define MOVE_RIGHT 3
+#define MOVE_DOWN 4
+
 #define MISSING_PARAMETER 1
 #define MALFORMED_INPUT 2
 #define FIELD_TOO_SMALL 3
