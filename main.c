@@ -11,7 +11,8 @@ int rows = 0;
 /**
 Test inputs:
     "7 2 6 5; 1 3 4 8; 10 11 9 12; 13 14 15 0"
-    "1 2 3 4; 5 6 7 8; 7 10 11 12; 13 14 0 15"
+    "1 2 3 4; 5 6 7 8; 9 10 11 12; 13 14 0 15"
+    "1 2 3 4; 5 6 7 8; 9 10 12 15; 13 14 11 0"
 */
 
 
@@ -48,10 +49,9 @@ struct GameState *createNewState(struct GameState *queue)
 /**
     Searches for solution
 */
-void solveFifteen()
+int solveFifteen()
 {
     struct GameState *queue;
-    int i = 0;
     
     while (notEmptyPQ())
     {        
@@ -59,9 +59,25 @@ void solveFifteen()
         
         if (queue->manhattanDistance == 0)
         {
+            int i;
             printMatrix(queue->tilesPosition);
-            printf("Nalezena cesta!\n");   
-            system("PAUSE"); 
+            printf("Nalezena cesta! o delce %d\n", queue->distance);   
+            struct GameState *goal = queue;
+            int moves[queue->distance];
+            for (i = 0; goal != NULL; i++)
+            {
+                moves[i] = getLastMove(goal);
+                printMatrix(goal->tilesPosition);
+                printf("\n");
+                goal = goal->prev;
+            }
+            printf("Goal:\n");
+            for (i = queue->distance - 1; i >= 0; i--)
+            {
+                printf("%d ", moves[i]);
+            }
+            system("PAUSE");
+            return 0;
         }
         else
         {
@@ -97,10 +113,9 @@ void solveFifteen()
             }
             //printPQ();
             //system("PAUSE");
-            //printf("%d. %d\n", i++, queue->manhattanDistance);
         }
     }
-    printf("fronta je prazdna\n");
+    return 1;
 }
 
 
@@ -204,7 +219,16 @@ int main(int argc, char *argv[])
     }
     free(state.tilesPosition);
     */
-    solveFifteen();
+    int solved = solveFifteen();
+    
+    if (solved == 0)
+    {
+        printf("OH YEAH!\n");
+    }
+    else
+    {
+        printf("Toz nic\n");
+    }
         
     system("PAUSE");
     return 0;
