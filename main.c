@@ -186,6 +186,12 @@ int main(int argc, char *argv[])
         } 
     }
     
+    int usedNumbers[rows * rows];
+    for (i = 0; i < rows * rows; i++)
+    {
+        usedNumbers[i] = 0;
+    }
+    
     rows = 0;
     int cols = 0;
     int prevCols = 0;
@@ -201,6 +207,7 @@ int main(int argc, char *argv[])
                 return MALFORMED_INPUT;
             }
             state.tilesPosition[rows][cols] = number;
+            usedNumbers[number] = 1;
             
             // init for next row
             rows++;
@@ -217,6 +224,7 @@ int main(int argc, char *argv[])
         if (initState[i] == ' ')
         {
             state.tilesPosition[rows][cols] = number;
+            usedNumbers[number] = 1;
             cols++;    
             number = 0;
         }
@@ -228,8 +236,18 @@ int main(int argc, char *argv[])
     if (number != 0)
     {
         state.tilesPosition[rows][cols] = number;
+        usedNumbers[number] = 1;
     }
     rows++;
+    
+    for (i = 0; i < rows * rows; i++)
+    {
+        if (usedNumbers[i] == 0)
+        {
+            printf("ERR#2: Malformed input!");
+            return MALFORMED_INPUT;
+        }
+    }
     
     int isSolvable = isSolvableState(&state);
     if (isSolvable == 0)
