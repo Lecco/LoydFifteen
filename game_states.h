@@ -1,9 +1,22 @@
+/**
+    This structure represents any state of game in state tree including
+    how to get to it and its position in priority queue.
+*/
 struct GameState
 {
+        /** 2D array, on coordinates of this array are tiles*/
         int** tilesPosition;
+        
+        /** manhattan distance of current state (see documentation) */
         int manhattanDistance;
+        
+        /** distance of current state from beginnning (move increments distance) */
         int distance;
+        
+        /** pointer to next state in priority queue */
         struct GameState *next;
+        
+        /** pointer to previous state (is used to determine, how we got to this state) */
         struct GameState *prev;
 } *front = NULL;
 
@@ -205,7 +218,7 @@ int getLastMove(struct GameState *state)
 }
 
 /**
-    Return tile which moved
+    Return tile which moved. 
 */
 int getMovedTile(struct GameState *state)
 {
@@ -221,6 +234,8 @@ int getMovedTile(struct GameState *state)
         {
             for (j = 0; j < length; j++)
             {
+                // if current state has zero there, previous state has on these
+                // coordinates tile which moved
                 if (state->tilesPosition[i][j] == 0)
                 {
                     return state->prev->tilesPosition[i][j];
@@ -242,7 +257,7 @@ int getRowsCount(char* initState)
     {
         if (initState[i] == ';')
         {
-            // we don't count semicolon on last position of parameter
+            // we don't count semicolon on last position of parameter (if there is one)
             if (i != strlen(initState) - 1)
             {
                 rows++;    
@@ -254,7 +269,7 @@ int getRowsCount(char* initState)
 }
 
 /**
-    Prints two dimesnional array
+    Prints two-dimensional array (only for checking if it is correct)
 */
 void printMatrix(int** matrix)
 {
@@ -272,6 +287,7 @@ void printMatrix(int** matrix)
 
 /**
     Returns sum of manhattan distances between number and their right position
+    (see documentation to find out how to solve manhattan distance)
 */
 int getManhattanDistance(struct GameState state)
 {

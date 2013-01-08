@@ -3,6 +3,8 @@
 */
 void insertPQ(struct GameState *state)
 {
+    // if priority queue is empty or if this new state has lower (distance + manhattan distance), 
+    // place it on top of priority queue
     if(front == NULL || (state->manhattanDistance + state->distance) < (front->manhattanDistance + front->distance))
     {
         state->next = front;
@@ -12,10 +14,12 @@ void insertPQ(struct GameState *state)
     {
         struct GameState *q;
         q = front;
+        // walk through priority queue until we reach  element with too high sum of manhattan distance and distance
         while(q->next != NULL && (q->next->manhattanDistance + q->next->distance) <= (state->manhattanDistance + state->distance))
         {
             q = q->next;
         }
+        // lets place this state before state with bigger (distance + manhattan distance)
         state->next = q->next;
         q->next = state;
     }
@@ -45,7 +49,8 @@ int notEmptyPQ()
 }
 
 /**
-    Returns top of priority queue (element with lowest manhattan distance)
+    Returns top of priority queue (element with lowest sum of manhattan distance and distance)
+    and makes top of queue next element
 */
 struct GameState *getQueueTop()
 {
