@@ -29,12 +29,25 @@ struct GameState *createNewState(struct GameState *queue)
     int i, j;
     
     s = (struct GameState *) malloc(sizeof(struct GameState) + sizeof(int *) * sizeof(int *) * rows);
+    if (s == NULL)
+    {
+        return NULL;    
+    }
+    
     s->distance = queue->distance + 1;
     
     s->tilesPosition = (int **)malloc(sizeof(int *) * sizeof(int *) * rows);
+    if (s->tilesPosition == NULL)
+    {
+        return NULL;
+    }
     for (i = 0; i < rows; i++)
     {
         s->tilesPosition[i] = (int *)malloc(sizeof(int *) * rows);
+        if (s->tilesPosition[i] == NULL)
+        {
+            return NULL;
+        }
         
         for (j = 0; j < rows; j++)
         {
@@ -43,8 +56,16 @@ struct GameState *createNewState(struct GameState *queue)
     }
     
     s->prev = (struct GameState *) malloc(sizeof(struct GameState *));
+    if (s->prev == NULL)
+    {
+        return NULL;
+    }
     s->prev = queue;
     s->next = (struct GameState *) malloc(sizeof(struct GameState *));
+    if (s->next == NULL)
+    {
+        return NULL;
+    }
     
     return s; 
 }
@@ -114,6 +135,10 @@ int solveFifteen()
             if (canMoveLeft(queue) && lastMove != MOVE_RIGHT)
             {
                 struct GameState *s = createNewState(queue);
+                if (s == NULL)
+                {
+                    return OUT_OF_MEMORY;    
+                }
                 moveLeft(s);
                 s->manhattanDistance = getManhattanDistance(*s);
                 insertPQ(s);
@@ -121,6 +146,10 @@ int solveFifteen()
             if (canMoveRight(queue) && lastMove != MOVE_LEFT)
             {
                 struct GameState *s = createNewState(queue);
+                if (s == NULL)
+                {
+                    return OUT_OF_MEMORY;    
+                }
                 moveRight(s);
                 s->manhattanDistance = getManhattanDistance(*s);
                 insertPQ(s);
@@ -128,6 +157,10 @@ int solveFifteen()
             if (canMoveUp(queue) && lastMove != MOVE_DOWN)
             {
                 struct GameState *s = createNewState(queue);
+                if (s == NULL)
+                {
+                    return OUT_OF_MEMORY;    
+                }
                 moveUp(s);
                 s->manhattanDistance = getManhattanDistance(*s);
                 insertPQ(s);
@@ -135,6 +168,10 @@ int solveFifteen()
             if (canMoveDown(queue) && lastMove != MOVE_UP)
             {
                 struct GameState *s = createNewState(queue);
+                if (s == NULL)
+                {
+                    return OUT_OF_MEMORY;    
+                }
                 moveDown(s);
                 s->manhattanDistance = getManhattanDistance(*s);
                 insertPQ(s);
@@ -182,9 +219,19 @@ int main(int argc, char *argv[])
         
     // allocation of memory for initial state of game
     state.tilesPosition = (int **)malloc(rows * sizeof(int *));
+    if (state.tilesPosition == NULL)
+    {
+        printf("ERR#5: Out of memory!");
+        return OUT_OF_MEMORY;
+    }
     for (i = 0; i < rows; i++)
     {
-        state.tilesPosition[i] = (int *)malloc(rows * sizeof(int *));   
+        state.tilesPosition[i] = (int *)malloc(rows * sizeof(int *));
+        if (state.tilesPosition[i] == NULL)
+        {
+            printf("ERR#5: Out of memory!");
+            return OUT_OF_MEMORY;
+        }
         for (j = 0; j < rows; j++)
         {
             state.tilesPosition[i][j] = 0;    
@@ -238,18 +285,16 @@ int main(int argc, char *argv[])
             number = number * 10 + (initState[i] - 48);
         }
     }
-    if (number != 0)
-    {
-        state.tilesPosition[rows][cols] = number;
-        usedNumbers[number] = 1;
-    }
+    state.tilesPosition[rows][cols] = number;
+    usedNumbers[number] = 1;
+    
     rows++;
     
     for (i = 0; i < rows * rows; i++)
     {
         if (usedNumbers[i] == 0)
         {
-            printf("ERR#2: Malformed input!");
+            printf("juchERR#2: Malformed input!");
             return MALFORMED_INPUT;
         }
     }
@@ -265,7 +310,17 @@ int main(int argc, char *argv[])
     state.manhattanDistance = getManhattanDistance(state);
     state.distance = 0;
     state.next = (struct GameState *) malloc(sizeof(struct GameState *));
+    if (state.next == NULL)
+    {
+        printf("ERR#5: Out of memory!");
+        return OUT_OF_MEMORY;
+    }
     state.prev = (struct GameState *) malloc(sizeof(struct GameState *));
+    if (state.prev == NULL)
+    {
+        printf("ERR#5: Out of memory!");
+        return OUT_OF_MEMORY;
+    }
     state.next = NULL;
     state.prev = NULL;
     
@@ -273,6 +328,12 @@ int main(int argc, char *argv[])
     insertPQ(&state);
     
     int solved = solveFifteen();
+    
+    if (solved == OUT_OF_MEMORY)
+    {
+        printf("ERR#5: Out of memory!");
+        return OUT_OF_MEMORY;
+    }
     
     if (solved == 0)
     {
