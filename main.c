@@ -4,8 +4,8 @@
 int rows = 0;
 
 #include "constants.h"
-#include "game_states.h"
 #include "pq.h"
+#include "game_states.h"
 
 
 
@@ -15,6 +15,7 @@ Test inputs:
     "1 2 3 4; 5 6 7 8; 9 10 11 12; 13 14 0 15"
     "1 2 3 4; 5 6 7 8; 9 10 12 15; 13 14 11 0"
     "1 2 3 4; 5 6 7 8; 9 10 11 12; 13 14 15 0"
+    "1 2 3 4; 5 6 7 8; 9 10 11 12; 13 15 14 0"
     "1 2 3; 4 5 6; 7 0 8"
 */
 
@@ -229,6 +230,13 @@ int main(int argc, char *argv[])
         state.tilesPosition[rows][cols] = number;
     }
     rows++;
+    
+    int isSolvable = isSolvableState(&state);
+    if (isSolvable == 0)
+    {
+        printf("ERR#4: Non-existent solution!");
+        return NONEXISTENT_SOLUTION;
+    }
     
     // init of first element in priority queue
     state.manhattanDistance = getManhattanDistance(state);
