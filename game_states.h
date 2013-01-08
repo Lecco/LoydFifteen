@@ -1,26 +1,4 @@
 /**
-    This structure represents any state of game in state tree including
-    how to get to it and its position in priority queue.
-*/
-struct GameState
-{
-        /** 2D array, on coordinates of this array are tiles*/
-        int** tilesPosition;
-        
-        /** manhattan distance of current state (see documentation) */
-        int manhattanDistance;
-        
-        /** distance of current state from beginnning (move increments distance) */
-        int distance;
-        
-        /** pointer to next state in priority queue */
-        struct GameState *next;
-        
-        /** pointer to previous state (is used to determine, how we got to this state) */
-        struct GameState *prev;
-} *front = NULL;
-
-/**
    Returns true (1) if in current game tree state it is possible
    to move empty space left
 */
@@ -306,3 +284,55 @@ int getManhattanDistance(struct GameState state)
     
     return manhattan;
 }
+
+/**
+    Returns 1 if this game state can be solved
+    (see documentation for info how it is determined)
+*/
+int isSolvableState(struct GameState *state)
+{
+    int inversionCount = 0;
+    int i, j, rowWithSpace;
+    
+    for (i = 0; i < rows * rows; i++)
+    {
+        if (state->tilesPosition[i / rows][i % rows] == 0)
+        {
+            rowWithSpace = i / rows;
+            continue;
+        }
+        for (j = i + 1; j < rows * rows; j++)
+        {
+            if (state->tilesPosition[j / rows][j % rows] == 0)
+            {
+                continue;
+            }
+            if (state->tilesPosition[i / rows][i % rows] > state->tilesPosition[j / rows][j % rows])
+            {
+                inversionCount++;
+            }
+        }
+    }
+    
+    if ((rows % EVEN_NUMBER == 1 && inversionCount % EVEN_NUMBER == 0) ||
+        (rows % EVEN_NUMBER == 0 && (rows - rowWithSpace) % EVEN_NUMBER == 0 && inversionCount % EVEN_NUMBER == 1) ||
+        (rows % EVEN_NUMBER == 0 && (rows - rowWithSpace) % EVEN_NUMBER == 1 && inversionCount % EVEN_NUMBER == 0))
+    {
+        return 1;
+    }
+    
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

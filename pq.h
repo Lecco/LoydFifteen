@@ -1,4 +1,27 @@
 /**
+    This structure represents any state of game in state tree including
+    how to get to it and its position in priority queue.
+*/
+struct GameState
+{
+        /** 2D array, on coordinates of this array are tiles*/
+        int** tilesPosition;
+        
+        /** manhattan distance of current state (see documentation) */
+        int manhattanDistance;
+        
+        /** distance of current state from beginnning (move increments distance) */
+        int distance;
+        
+        /** pointer to next state in priority queue */
+        struct GameState *next;
+        
+        /** pointer to previous state (is used to determine, how we got to this state) */
+        struct GameState *prev;
+} *front = NULL;
+
+
+/**
     Inserts game state to priority queue (depending on its manhattan distance)
 */
 void insertPQ(struct GameState *state)
