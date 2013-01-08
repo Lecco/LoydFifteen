@@ -47,6 +47,49 @@ struct GameState *createNewState(struct GameState *queue)
 }
 
 /**
+    Print solution in this format:
+        moveNumber. [movedTile] MOVE_DIRECTION
+*/
+void printSolution(struct GameState *queue)
+{
+    int i, j;
+    struct GameState *goal = queue;
+    int moves[queue->distance];
+    int movedTiles[queue->distance];
+    // fill arays of moves and tiles, which moved - we'll have to go through them
+    // from the end
+    for (i = 0; goal != NULL; i++)
+    {
+        moves[i] = getLastMove(goal);
+        movedTiles[i] = getMovedTile(goal);
+        goal = goal->prev;
+    }
+    char *move;
+    for (i = queue->distance - 1, j = 1; i >= 0; i--, j++)
+    {
+        // moves are named after moving of space (empty tile), but we want to know, 
+        // which direction moved tile to swap with
+        if (moves[i] == MOVE_LEFT)
+        {
+            move = "RIGHT";
+        }
+        if (moves[i] == MOVE_UP)
+        {
+            move = "DOWN";
+        }
+        if (moves[i] == MOVE_RIGHT)
+        {
+            move = "LEFT";
+        }
+        if (moves[i] == MOVE_DOWN)
+        {
+            move = "UP";
+        }
+        printf("%d. [%d] %s\n", j, movedTiles[i], move);
+    }
+}
+
+/**
     Searches for solution
 */
 int solveFifteen()
@@ -59,29 +102,12 @@ int solveFifteen()
         
         if (queue->manhattanDistance == 0)
         {
-            int i;
-            printMatrix(queue->tilesPosition);
-            printf("Nalezena cesta! o delce %d\n", queue->distance);   
-            struct GameState *goal = queue;
-            int moves[queue->distance];
-            for (i = 0; goal != NULL; i++)
-            {
-                moves[i] = getLastMove(goal);
-                printMatrix(goal->tilesPosition);
-                printf("\n");
-                goal = goal->prev;
-            }
-            printf("Goal:\n");
-            for (i = queue->distance - 1; i >= 0; i--)
-            {
-                printf("%d ", moves[i]);
-            }
+            printSolution(queue);
             system("PAUSE");
             return 0;
         }
         else
         {
-            //printMatrix(queue->tilesPosition);
             int lastMove = getLastMove(queue);
             if (canMoveLeft(queue) && lastMove != MOVE_RIGHT)
             {
@@ -111,8 +137,6 @@ int solveFifteen()
                 s->manhattanDistance = getManhattanDistance(*s);
                 insertPQ(s);
             }
-            //printPQ();
-            //system("PAUSE");
         }
     }
     return 1;
@@ -199,8 +223,6 @@ int main(int argc, char *argv[])
         state.tilesPosition[rows][cols] = number;
     }
     
-    printMatrix(state.tilesPosition);
-        
     // init of first element in priority queue
     state.manhattanDistance = getManhattanDistance(state);
     state.distance = 0;
@@ -212,13 +234,6 @@ int main(int argc, char *argv[])
     // insert first element to priority queue
     insertPQ(&state);
     
-    /*
-    for (i = 0; i < length; i++)
-    {
-        free(state.tilesPosition[i]);
-    }
-    free(state.tilesPosition);
-    */
     int solved = solveFifteen();
     
     if (solved == 0)
