@@ -174,6 +174,11 @@ int main(int argc, char *argv[])
     
     // there is one less semicolon than rows
     rows++;
+    if (rows < MINIMUM_ROWS)
+    {
+        printf("ERR#3: Field too small!");
+        return FIELD_TOO_SMALL;
+    }
         
     // allocation of memory for initial state of game
     state.tilesPosition = (int **)malloc(rows * sizeof(int *));
