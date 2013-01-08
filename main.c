@@ -17,6 +17,8 @@ Test inputs:
     "1 2 3 4; 5 6 7 8; 9 10 11 12; 13 14 15 0"
     "1 2 3 4; 5 6 7 8; 9 10 11 12; 13 15 14 0"
     "1 2 3; 4 5 6; 7 0 8"
+    "0 1 3; 4 2 5; 7 8 6"
+    "8 7 6; 5 4 3; 2 1 0"
 */
 
 
@@ -119,14 +121,37 @@ void printSolution(struct GameState *queue)
 int solveFifteen()
 {
     struct GameState *queue;
+    int i;
     
     while (notEmptyPQ())
-    {        
+    {
         queue = getQueueTop();
         
         if (queue->manhattanDistance == 0)
         {
             printSolution(queue);
+            
+            for (i = 0; i < rows; i++)
+            {
+                free(queue->tilesPosition[i]);
+            }
+            free(queue->tilesPosition);
+            free(queue->prev);
+            queue->prev = NULL;
+            
+            // deallocate memory
+            while (notEmptyPQ())
+            {
+                queue = NULL;
+                queue = getQueueTop();
+                for (i = 0; i < rows; i++)
+                {
+                    free(queue->tilesPosition[i]);
+                }
+                free(queue->tilesPosition);
+                free(queue->prev);
+                queue->prev = NULL;
+            }
             return 0;
         }
         else
@@ -177,6 +202,7 @@ int solveFifteen()
                 insertPQ(s);
             }
         }
+        
     }
     return 1;
 }
@@ -334,16 +360,7 @@ int main(int argc, char *argv[])
         printf("ERR#5: Out of memory!");
         return OUT_OF_MEMORY;
     }
-    
-    if (solved == 0)
-    {
-        printf("OH YEAH!\n");
-    }
-    else
-    {
-        printf("Toz nic\n");
-    }
         
-    system("PAUSE");
+    //system("PAUSE");
     return 0;
 }
