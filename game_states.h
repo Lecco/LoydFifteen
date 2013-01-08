@@ -27,8 +27,7 @@ struct GameState
 int canMoveLeft(struct GameState* thisState)
 {
     int i;
-    int length = sizeof(thisState->tilesPosition);
-    for (i = 0; i < length; i++)
+    for (i = 0; i < rows; i++)
     {
         if (thisState->tilesPosition[i][0] == 0)
         {
@@ -45,10 +44,9 @@ int canMoveLeft(struct GameState* thisState)
 int canMoveRight(struct GameState* thisState)
 {
     int i;
-    int length = sizeof(thisState->tilesPosition);
-    for (i = 0; i < length; i++)
+    for (i = 0; i < rows; i++)
     {
-        if (thisState->tilesPosition[i][length - 1] == 0)
+        if (thisState->tilesPosition[i][rows - 1] == 0)
         {
             return 0;
         }
@@ -63,8 +61,7 @@ int canMoveRight(struct GameState* thisState)
 int canMoveUp(struct GameState* thisState)
 {
     int i;
-    int length = sizeof(thisState->tilesPosition);
-    for (i = 0; i < length; i++)
+    for (i = 0; i < rows; i++)
     {
         if (thisState->tilesPosition[0][i] == 0)
         {
@@ -81,10 +78,9 @@ int canMoveUp(struct GameState* thisState)
 int canMoveDown(struct GameState* thisState)
 {
     int i;
-    int length = sizeof(thisState->tilesPosition);
-    for (i = 0; i < length; i++)
+    for (i = 0; i < rows; i++)
     {
-        if (thisState->tilesPosition[length - 1][i] == 0)
+        if (thisState->tilesPosition[rows - 1][i] == 0)
         {
             return 0;
         }
@@ -98,10 +94,9 @@ int canMoveDown(struct GameState* thisState)
 void moveLeft(struct GameState *state)
 {
     int i, j;
-    int length = sizeof(state->tilesPosition);
-    for (i = 0; i < length; i++)
+    for (i = 0; i < rows; i++)
     {
-        for (j = 0; j < length; j++)
+        for (j = 0; j < rows; j++)
         {
             if (state->tilesPosition[i][j] == 0)
             {
@@ -119,10 +114,9 @@ void moveLeft(struct GameState *state)
 void moveRight(struct GameState *state)
 {
     int i, j;
-    int length = sizeof(state->tilesPosition);
-    for (i = 0; i < length; i++)
+    for (i = 0; i < rows; i++)
     {
-        for (j = 0; j < length; j++)
+        for (j = 0; j < rows; j++)
         {
             if (state->tilesPosition[i][j] == 0)
             {
@@ -140,10 +134,9 @@ void moveRight(struct GameState *state)
 void moveUp(struct GameState *state)
 {
     int i, j;
-    int length = sizeof(state->tilesPosition);
-    for (i = 0; i < length; i++)
+    for (i = 0; i < rows; i++)
     {
-        for (j = 0; j < length; j++)
+        for (j = 0; j < rows; j++)
         {
             if (state->tilesPosition[i][j] == 0)
             {
@@ -161,10 +154,9 @@ void moveUp(struct GameState *state)
 void moveDown(struct GameState *state)
 {
     int i, j;
-    int length = sizeof(state->tilesPosition);
-    for (i = 0; i < length; i++)
+    for (i = 0; i < rows; i++)
     {
-        for (j = 0; j < length; j++)
+        for (j = 0; j < rows; j++)
         {
             if (state->tilesPosition[i][j] == 0)
             {
@@ -188,10 +180,9 @@ int getLastMove(struct GameState *state)
     else
     {
         int i, j;
-        int length = sizeof(state->tilesPosition);
-        for (i = 0; i < length; i++)
+        for (i = 0; i < rows; i++)
         {
-            for (j = 0; j < length; j++)
+            for (j = 0; j < rows; j++)
             {
                 if (state->tilesPosition[i][j] == 0)
                 {
@@ -199,11 +190,11 @@ int getLastMove(struct GameState *state)
                     {
                         return MOVE_RIGHT;
                     }
-                    if (i < (length - 1) && state->prev->tilesPosition[i + 1][j] == 0)
+                    if (i < (rows - 1) && state->prev->tilesPosition[i + 1][j] == 0)
                     {
                         return MOVE_UP;
                     }
-                    if (j < (length - 1) && state->prev->tilesPosition[i][j + 1] == 0)
+                    if (j < (rows - 1) && state->prev->tilesPosition[i][j + 1] == 0)
                     {
                         return MOVE_LEFT;
                     }
@@ -229,10 +220,9 @@ int getMovedTile(struct GameState *state)
     else
     {
         int i, j;
-        int length = sizeof(state->tilesPosition);
-        for (i = 0; i < length; i++)
+        for (i = 0; i < rows; i++)
         {
-            for (j = 0; j < length; j++)
+            for (j = 0; j < rows; j++)
             {
                 // if current state has zero there, previous state has on these
                 // coordinates tile which moved
@@ -251,8 +241,8 @@ int getMovedTile(struct GameState *state)
 int getRowsCount(char* initState)
 {
     int rows = 0;
-    int length = strlen(initState);
     int i;
+    int length = strlen(initState);
     for (i = 0; i < length; i++)
     {
         if (initState[i] == ';')
@@ -277,11 +267,10 @@ int getRowsCount(char* initState)
 */
 void printMatrix(int** matrix)
 {
-    int length = sizeof(matrix);
     int i, j;
-    for (i = 0; i < length; i++)
+    for (i = 0; i < rows; i++)
     {
-        for (j = 0; j < length; j++)
+        for (j = 0; j < rows; j++)
         {
             printf("%d ", matrix[i][j]);    
         }    
@@ -299,20 +288,19 @@ int getManhattanDistance(struct GameState state)
     int number = 0;
     int row;
     int i, j;
-    int length = sizeof(state.tilesPosition);
-    for (i = 0; i < length; i++)
+    for (i = 0; i < rows; i++)
     {
-        for (j = 0; j < length; j++)
+        for (j = 0; j < rows; j++)
         {
             number = state.tilesPosition[i][j];
             if (number == 0)
             {
                 // zero is on last position
-                number = length * length;
+                number = rows * rows;
             }
-            row = (number - 1) / length;
+            row = (number - 1) / rows;
             manhattan += abs(row - i);
-            manhattan += abs((number - 1) % length - j);
+            manhattan += abs((number - 1) % rows - j);
         }
     }
     

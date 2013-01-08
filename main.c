@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int rows = 0;
 
 #include "constants.h"
 #include "game_states.h"
 #include "pq.h"
 
-int rows = 0;
+
 
 /**
 Test inputs:
@@ -14,6 +15,7 @@ Test inputs:
     "1 2 3 4; 5 6 7 8; 9 10 11 12; 13 14 0 15"
     "1 2 3 4; 5 6 7 8; 9 10 12 15; 13 14 11 0"
     "1 2 3 4; 5 6 7 8; 9 10 11 12; 13 14 15 0"
+    "1 2 3; 4 5 6; 7 0 8"
 */
 
 
@@ -29,12 +31,11 @@ struct GameState *createNewState(struct GameState *queue)
     s->distance = queue->distance + 1;
     
     s->tilesPosition = (int **)malloc(sizeof(int *) * sizeof(int *) * rows);
-    int length = sizeof(int *);
-    for (i = 0; i < length; i++)
+    for (i = 0; i < rows; i++)
     {
-        s->tilesPosition[i] = (int *)malloc(length * sizeof(int *) * rows);
+        s->tilesPosition[i] = (int *)malloc(sizeof(int *) * rows);
         
-        for (j = 0; j < length; j++)
+        for (j = 0; j < rows; j++)
         {
             s->tilesPosition[i][j] = queue->tilesPosition[i][j];
         }
@@ -104,7 +105,6 @@ int solveFifteen()
         if (queue->manhattanDistance == 0)
         {
             printSolution(queue);
-            system("PAUSE");
             return 0;
         }
         else
@@ -173,13 +173,13 @@ int main(int argc, char *argv[])
     
     // there is one less semicolon than rows
     rows++;
-    
+        
     // allocation of memory for initial state of game
     state.tilesPosition = (int **)malloc(rows * sizeof(int *));
     for (i = 0; i < rows; i++)
     {
         state.tilesPosition[i] = (int *)malloc(rows * sizeof(int *));   
-        for (j = 0; j < sizeof(state.tilesPosition[i]); j++)
+        for (j = 0; j < rows; j++)
         {
             state.tilesPosition[i][j] = 0;    
         } 
@@ -228,6 +228,7 @@ int main(int argc, char *argv[])
     {
         state.tilesPosition[rows][cols] = number;
     }
+    rows++;
     
     // init of first element in priority queue
     state.manhattanDistance = getManhattanDistance(state);
