@@ -262,7 +262,11 @@ int getRowsCount(char* initState)
             {
                 rows++;    
             }
-        }    
+        }
+        if (initState[i] != ';' || initState[i] != ' ' || isdigit(initState[i]) != 1)
+        {
+            return -1;
+        }
     }
     
     return rows;

@@ -13,6 +13,7 @@ Test inputs:
     "7 2 6 5; 1 3 4 8; 10 11 9 12; 13 14 15 0"
     "1 2 3 4; 5 6 7 8; 9 10 11 12; 13 14 0 15"
     "1 2 3 4; 5 6 7 8; 9 10 12 15; 13 14 11 0"
+    "1 2 3 4; 5 6 7 8; 9 10 11 12; 13 14 15 0"
 */
 
 
@@ -164,6 +165,12 @@ int main(int argc, char *argv[])
     // count rows
     rows = getRowsCount(initState);
     
+    if (rows == -1)
+    {
+        printf("ERR#2: Malformed input!");
+        return MALFORMED_INPUT;
+    }
+    
     // there is one less semicolon than rows
     rows++;
     
@@ -190,7 +197,6 @@ int main(int argc, char *argv[])
             if (cols != prevCols && prevCols != 0)
             {
                 printf("ERR#2: Malformed input!");
-                system("PAUSE");
                 return MALFORMED_INPUT;
             }
             state.tilesPosition[rows][cols] = number;
