@@ -205,6 +205,32 @@ int getLastMove(struct GameState *state)
 }
 
 /**
+    Return tile which moved
+*/
+int getMovedTile(struct GameState *state)
+{
+    if (state->prev == NULL)
+    {
+        return 0;
+    }
+    else
+    {
+        int i, j;
+        int length = sizeof(state->tilesPosition);
+        for (i = 0; i < length; i++)
+        {
+            for (j = 0; j < length; j++)
+            {
+                if (state->tilesPosition[i][j] == 0)
+                {
+                    return state->prev->tilesPosition[i][j];
+                }
+            }
+        }
+    }
+}
+
+/**
     Returns number of rows in given string (according to format of parameter)
 */
 int getRowsCount(char* initState)
