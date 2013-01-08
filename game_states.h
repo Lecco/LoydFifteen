@@ -263,7 +263,7 @@ int getRowsCount(char* initState)
                 rows++;    
             }
         }
-        if (initState[i] != ';' || initState[i] != ' ' || isdigit(initState[i]) != 1)
+        if (initState[i] != ';' && initState[i] != ' ' && isdigit(initState[i]) == 0)
         {
             return -1;
         }
