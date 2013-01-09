@@ -1,7 +1,8 @@
-\documentclass[12pt]{report}
+\documentclass[12pt,titlepage]{article}
 \usepackage[czech]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{a4wide}
+\usepackage{hyperref}
 \pagestyle{headings}
 \author{Oldřich Pulkrt}
 \title{Dokumentace k semestrální práci z předmětu KIV/PC}
@@ -9,26 +10,39 @@
 \begin{document}
 \maketitle
 \tableofcontents
+\newpage
 
-\chapter{Zadání}
-Naprogramujte v ANSI C přenositelnou1 konzolovou aplikaci, která jako vstup načte z parametru na příkazové řádce výchozí stav hlavolamu \uv{Loydova patnáctka} a tento hlavolam vyřeší, tj. převede jej posloupností povolených tahů do základní pozice (posloupnost od jedné do nejvyššího čísla zadání a na poslední pozici - vpravo dole - je prázdné pole).
+\section{Zadání}
 \par
-Celé zadání lze nalézt na adrese http://www.kiv.zcu.cz/studies/predmety/pc/doc/work/sw2012-02.pdf
+Naprogramujte v ANSI C přenositelnou1 konzolovou aplikaci, která jako vstup načte z parametru na příkazové řádce výchozí stav hlavolamu \uv{Loydova patnáctka} a tento hlavolam vyřeší, tj. převede jej posloupností povolených tahů do základní pozice (posloupnost od jedné do nejvyššího čísla zadání a na poslední pozici - vpravo dole - je prázdné pole).
+\newline
+\par
+Celé zadání lze nalézt na adrese \url{http://www.kiv.zcu.cz/studies/predmety/pc/doc/work/sw2012-02.pdf}
 
-\chapter{Analýza úlohy}
+\section{Analýza úlohy}
+V této sekci se budu postupně zabývat dvěma hlavními problémy u této úlohy. Prvním z nich je ukázat, zda je zadání opravdu řešitelné, a druhým problémem bude samotné vyřešení. Předem předpokládáme, že uživatel nemusí znát správný tvar zadání, takže se na vstupu může objevit cokoli a program sám se musí ujistit o tom, že je zadání v pořádku. Bude-li cokoli v nepořádku, program na to upozorní, viz uživatelská příručka.
 
-\section{Řešitelnost zadání}
+\subsection{Řešitelnost zadání}
+Nejprve musíme zkontrolovat, zda je zadání ve správném tvaru. Musíme se ujistit, že:
+\begin{itemize}
+\item se shoduje počet řádek i počet sloupců a že je na každém řádku stejný počet zadaných hodnot
+\item se žádná hodnota v zadání neopakuje
+\item zadání obsahuje prázdné místo
+\item jsou zadány nejméně 3 řádky a sloupce (pro nižší hodnoty je zadání triviální)
+\end{itemize}
 
-\section{Datové struktury}
 
-\section{Algoritmy}
 
-\section{Výběr vhodných datových struktur a algoritmů}
+\subsection{Datové struktury}
 
-\chapter{Popis implementace}
+\subsection{Algoritmy}
 
-\chapter{Uživatelská příručka}
+\subsection{Výběr vhodných datových struktur a algoritmů}
 
-\chapter{Závěr}
+\section{Popis implementace}
+
+\section{Uživatelská příručka}
+
+\section{Závěr}
 
 \end{document}
