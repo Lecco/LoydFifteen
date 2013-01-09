@@ -18,6 +18,10 @@ local.properties
 SemestralniPrace.exe
 SemestralniPrace.layout
 main.o
+Dokumentace/Dokumentace.aux
+Dokumentace/Dokumentace.log
+Dokumentace/Dokumentace.synctex.gz
+Dokumentace/Dokumentace.toc
 
 # External tool builders
 .externalToolBuilders/
