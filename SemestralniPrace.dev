@@ -18,16 +18,16 @@ Icon=
 ExeOutput=
 ObjectOutput=
 OverrideOutput=0
-OverrideOutputName=
+OverrideOutputName=SemestralniPrace.exe
 HostApplication=
 Folders=
-CommandLine="8 7 6; 5 4 3; 2 1 0"
+CommandLine="8 7 16; 5 4 3; 2 1 0"
 UseCustomMakefile=0
 CustomMakefile=
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
-CompilerSettings=
+CompilerSettings=0000000000000000000000
 
 [Unit1]
 FileName=main.c
