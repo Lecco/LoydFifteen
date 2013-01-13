@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include "constants.h"
 
 
@@ -10,6 +12,7 @@ Test inputs:
     "1 2 3 4; 5 6 7 8; 9 10 12 15; 13 14 11 0"
     "1 2 3 4; 5 6 7 8; 9 10 11 12; 13 14 15 0"
     "1 2 3 4; 5 6 7 8; 9 10 11 12; 13 15 14 0"
+    "1 2 0 4; 5 6 3 8; 9 10 7 11; 13 14 15 12"
     "1 2 3; 4 5 6; 7 0 8"
     "0 1 3; 4 2 5; 7 8 6"
     "8 7 6; 5 4 3; 2 1 0"
@@ -44,8 +47,8 @@ int rows = 0;
 */
 void insertPQ(struct GameState *state)
 {
-    // if priority queue is empty or if this new state has lower (distance + manhattan distance), 
-    // place it on top of priority queue
+    /* if priority queue is empty or if this new state has lower (distance + manhattan distance), 
+       place it on top of priority queue */
     if(front == NULL || (state->manhattanDistance + state->distance) < (front->manhattanDistance + front->distance))
     {
         state->next = front;
@@ -55,12 +58,12 @@ void insertPQ(struct GameState *state)
     {
         struct GameState *q;
         q = front;
-        // walk through priority queue until we reach  element with too high sum of manhattan distance and distance
+        /* walk through priority queue until we reach  element with too high sum of manhattan distance and distance */
         while(q->next != NULL && (q->next->manhattanDistance + q->next->distance) <= (state->manhattanDistance + state->distance))
         {
             q = q->next;
         }
-        // lets place this state before state with bigger (distance + manhattan distance)
+        /* lets place this state before state with bigger (distance + manhattan distance) */
         state->next = q->next;
         q->next = state;
     }
@@ -287,6 +290,7 @@ int getLastMove(struct GameState *state)
             }
         }
     }
+    return 0;
 }
 
 /**
@@ -305,8 +309,8 @@ int getMovedTile(struct GameState *state)
         {
             for (j = 0; j < rows; j++)
             {
-                // if current state has zero there, previous state has on these
-                // coordinates tile which moved
+                /* if current state has zero there, previous state has on these
+                   coordinates tile which moved */
                 if (state->tilesPosition[i][j] == 0)
                 {
                     return state->prev->tilesPosition[i][j];
@@ -314,6 +318,7 @@ int getMovedTile(struct GameState *state)
             }
         }
     }
+    return 0;
 }
 
 /**
@@ -328,7 +333,7 @@ int getRowsCount(char* initState)
     {
         if (initState[i] == ';')
         {
-            // we don't count semicolon on last position of parameter (if there is one)
+            /* we don't count semicolon on last position of parameter (if there is one) */
             if (i != strlen(initState) - 1)
             {
                 rows++;    
@@ -376,7 +381,7 @@ int getManhattanDistance(struct GameState state)
             number = state.tilesPosition[i][j];
             if (number == 0)
             {
-                // zero is on last position
+                /* zero is on last position */
                 number = rows * rows;
             }
             row = (number - 1) / rows;
@@ -487,8 +492,8 @@ void printSolution(struct GameState *queue)
     struct GameState *goal = queue;
     int moves[queue->distance];
     int movedTiles[queue->distance];
-    // fill arays of moves and tiles, which moved - we'll have to go through them
-    // from the end
+    /* fill arays of moves and tiles, which moved - we'll have to go through them
+       from the end */
     for (i = 0; goal != NULL; i++)
     {
         moves[i] = getLastMove(goal);
@@ -498,8 +503,8 @@ void printSolution(struct GameState *queue)
     char *move;
     for (i = queue->distance - 1, j = 1; i >= 0; i--, j++)
     {
-        // moves are named after moving of space (empty tile), but we want to know, 
-        // which direction moved tile to swap with
+        /* moves are named after moving of space (empty tile), but we want to know, 
+           which direction moved tile to swap with */
         if (moves[i] == MOVE_LEFT)
         {
             move = "RIGHT";
@@ -516,8 +521,10 @@ void printSolution(struct GameState *queue)
         {
             move = "UP";
         }
-        printf("%d. [%d] %s\n", j, movedTiles[i], move);
+        printf("%d: [%d] %s\n", j, movedTiles[i], move);
     }
+    printf("GOAL\n");
+    system("PAUSE");
 }
 
 /**
@@ -544,9 +551,12 @@ int solveFifteen()
             free(queue->prev);
             queue->prev = NULL;
             
-            // deallocate memory
+            /* deallocate memory */
+            int pocet = 0;
             while (notEmptyPQ())
             {
+                pocet++;
+                free(queue);
                 queue = NULL;
                 queue = getQueueTop();
                 for (i = 0; i < rows; i++)
@@ -557,6 +567,8 @@ int solveFifteen()
                 free(queue->prev);
                 queue->prev = NULL;
             }
+            printf("Ve fronte bylo %d\n", pocet);
+            system("PAUSE");
             return 0;
         }
         else
@@ -623,7 +635,7 @@ int main(int argc, char *argv[])
              return MISSING_PARAMETER;
     }
         
-    // copy argv[1] to variable initState
+    /* copy argv[1] to variable initState */
     char initState[strlen(argv[1])];
     strcpy(initState, argv[1]);
     
@@ -631,7 +643,7 @@ int main(int argc, char *argv[])
     int length = strlen(initState);
     struct GameState state;
     
-    // count rows
+    /* count rows */
     rows = getRowsCount(initState);
     
     if (rows == -1)
@@ -640,7 +652,7 @@ int main(int argc, char *argv[])
         return MALFORMED_INPUT;
     }
     
-    // there is one less semicolon than rows
+    /* there is one less semicolon than rows */
     rows++;
     if (rows < MINIMUM_ROWS)
     {
@@ -648,7 +660,7 @@ int main(int argc, char *argv[])
         return FIELD_TOO_SMALL;
     }
         
-    // allocation of memory for initial state of game
+    /* allocation of memory for initial state of game */
     state.tilesPosition = (int **)malloc(rows * sizeof(int *));
     if (state.tilesPosition == NULL)
     {
@@ -683,7 +695,7 @@ int main(int argc, char *argv[])
     {
         if (initState[i] == ';')
         {
-            // if count of columns doesn't match, input format isn't right
+            /* if count of columns doesn't match, input format isn't right */
             if (cols != prevCols && prevCols != 0)
             {
                 printf("ERR#2: Malformed input!");
@@ -692,13 +704,13 @@ int main(int argc, char *argv[])
             state.tilesPosition[rows][cols] = number;
             usedNumbers[number] = 1;
             
-            // init for next row
+            /* init for next row */
             rows++;
             prevCols = cols;
             cols = 0;
             number = 0;
             
-            // if next character after semicolon is space, jump after it
+            /* if next character after semicolon is space, jump after it */
             if (initState[i + 1] == ' ')
             {
                 i += 2;    
@@ -725,7 +737,7 @@ int main(int argc, char *argv[])
     {
         if (usedNumbers[i] == 0)
         {
-            printf("juchERR#2: Malformed input!");
+            printf("ERR#2: Malformed input!");
             return MALFORMED_INPUT;
         }
     }
@@ -737,7 +749,7 @@ int main(int argc, char *argv[])
         return NONEXISTENT_SOLUTION;
     }
     
-    // init of first element in priority queue
+    /* init of first element in priority queue */
     state.manhattanDistance = getManhattanDistance(state);
     state.distance = 0;
     state.next = (struct GameState *) malloc(sizeof(struct GameState *));
@@ -755,7 +767,7 @@ int main(int argc, char *argv[])
     state.next = NULL;
     state.prev = NULL;
     
-    // insert first element to priority queue
+    /* insert first element to priority queue */
     insertPQ(&state);
     
     int solved = solveFifteen();
@@ -766,6 +778,6 @@ int main(int argc, char *argv[])
         return OUT_OF_MEMORY;
     }
         
-    //system("PAUSE");
+    /* system("PAUSE"); */
     return 0;
 }
